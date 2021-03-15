@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AuthGuard } from '../guards/auth.guard';
 
 import { PagesComponent } from './pages.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
@@ -14,6 +15,7 @@ const routes: Routes = [
     {
         path: '',
         component: PagesComponent,
+        canActivate: [AuthGuard],
         children: [
             { path: 'dashboard', component: DashboardComponent, data:{titulo: 'Dashboard'} },
             { path: 'progress', component: ProgressComponent, data:{titulo: 'progress'} },

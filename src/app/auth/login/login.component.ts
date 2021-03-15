@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, NgZone, OnInit } from '@angular/core';
 import { FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -25,7 +25,8 @@ export class LoginComponent implements OnInit{
 
   constructor( private router: Router,
                private fb: FormBuilder,
-               private userService: UserService) { }
+               private userService: UserService,
+               private ngZone: NgZone) { }
 
   ngOnInit(): void{
     this.renderButton();
@@ -40,13 +41,10 @@ export class LoginComponent implements OnInit{
           } else {
             localStorage.removeItem('email');
           }
+          this.router.navigateByUrl('/');
         }, (err) => {
           Swal.fire('Error', err.error.msg, 'error');
-        })
-    
-    // console.log(this.loginForm.value)
-    // this.router.navigateByUrl('/');
-    
+        });
   }
 
   renderButton() {
@@ -60,21 +58,23 @@ export class LoginComponent implements OnInit{
     this.startApp();
   }
 
-  startApp() {
-    gapi.load('auth2', () => {
-      this.auth2 = gapi.auth2.init({
-        client_id: '921151006999-sb1a0d3f79hb1cei5ve25bhvh8dtfdl7.apps.googleusercontent.com',
-        cookiepolicy: 'single_host_origin',
-      });
+  async startApp() {
+      await this.userService.googleInIt();
+      this.auth2 = this.userService.auth2;
       this.attachSignin(document.getElementById('my-signin2'));
-    });
+
   };
 
   attachSignin(element) {
     this.auth2.attachClickHandler(element, {},
         (googleUser) => {
           const id_token = googleUser.getAuthResponse().id_token;
-          this.userService.loginGoogle(id_token).subscribe();
+          this.userService.loginGoogle(id_token)
+          .subscribe( resp => {
+            this.ngZone.run( () => {
+              this.router.navigateByUrl('/');
+            })
+          });
         }, (error) => {
           alert(JSON.stringify(error, undefined, 2));
         });
