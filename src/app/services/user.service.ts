@@ -6,6 +6,7 @@ import { catchError, map, tap } from 'rxjs/operators';
 
 import { environment } from 'src/environments/environment';
 
+import { LoadUser } from '../interfaces/load-users.interface';
 import { LoginForm } from '../interfaces/login-form.interface';
 import { RegisterForm } from '../interfaces/register-form.interfaces';
 import { User } from '../models/user.model';
@@ -29,11 +30,19 @@ export class UserService {
   }
 
   get token(): string{
-    return  localStorage.getItem('token') || '';
+    return localStorage.getItem('token') || '';
   }
 
   get uid():string{
     return this.user.uid || '';
+  }
+
+  get headers(){
+    return {
+      headers: {
+        'x-token': this.token
+      }
+    }
   }
 
   googleInIt(){
@@ -89,12 +98,8 @@ export class UserService {
     data = {
       ...data,
       role: this.user.role
-    };
-    return this.http.put(`${base_url}/users/${this.uid}`, data, {
-      headers: {
-        'x-token': this.token
-      }
-    });
+    }
+    return this.http.put(`${base_url}/users/${this.uid}`, data, this.headers);
   }
 
   login(formData: LoginForm){
@@ -113,6 +118,34 @@ export class UserService {
         localStorage.setItem('token', resp.token)
       })
     )
+  }
+
+  loadUsers(from: number = 0 ){
+    const url = `${base_url}/users?from=${from}`
+    return this.http.get<LoadUser>( url, this.headers )
+          .pipe(
+            map( resp => {
+                const users = resp.users.map( 
+                  user => new User( user.name, user.email, user.password, user.img, user.google,user.role, user.uid ));
+                  console.log(users)
+                  return {
+                    total: resp.total,
+                    users
+                };
+              })
+            )
+  }
+
+  deleteUser(user: User){
+    console.log(user);
+    const url = `${base_url}/users/${user.uid}`;
+    return this.http.delete( url, this.headers );
+    // TO DO: check error at delete user from maintenance (requests doesnt fuckin work)
+  }
+
+  saveUser( user: User){
+    // TO DO: check error at change user role from maintenance (requests doesnt fuckin work)
+    return this.http.put(`${base_url}/users/${user.uid}`, user, this.headers);
   }
 
 }

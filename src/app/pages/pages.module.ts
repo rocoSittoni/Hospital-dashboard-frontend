@@ -14,6 +14,8 @@ import { AccountSettingsComponent } from './account-settings/account-settings.co
 import { PromisesComponent } from './promises/promises.component';
 import { RxjsComponent } from './rxjs/rxjs.component';
 import { ProfileComponent } from './profile/profile.component';
+import { UsersComponent } from './maintenance/users/users.component';
+import { HttpClientModule } from '@angular/common/http';
 
 
 
@@ -26,7 +28,8 @@ import { ProfileComponent } from './profile/profile.component';
     AccountSettingsComponent,
     PromisesComponent,
     RxjsComponent,
-    ProfileComponent
+    ProfileComponent,
+    UsersComponent
   ],
   exports: [
     DashboardComponent,
@@ -43,7 +46,8 @@ import { ProfileComponent } from './profile/profile.component';
     FormsModule,
     SharedModule,
     ReactiveFormsModule,
-    ComponentsModule
+    ComponentsModule,
+    HttpClientModule
   ]
 })
 export class PagesModule { }
