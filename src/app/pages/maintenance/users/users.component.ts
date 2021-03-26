@@ -61,21 +61,17 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   search(term: string){
-
     if(term.length === 0){
       return this.users = this.usersTemp;
     }
-    
     this.searchsService.search('users', term)
-        .subscribe( resp => {
+        .subscribe( (resp: User[]) => {
           this.users = resp;
         });
-
   }
 
   deleteUser(user: User){
     console.log(user);
-    // TO DO: check error at delete user from maintenance (requests doesnt fuckin work)
     if(user.uid === this.userService.uid){
       return Swal.fire('Error', 'cant delete yourself', 'error');
     }
@@ -102,7 +98,6 @@ export class UsersComponent implements OnInit, OnDestroy {
   }
 
   changeRole(user: User){
-     // TO DO: check error at change user role from maintenance (requests doesnt fuckin work)
     this.userService.saveUser(user)
         .subscribe(resp => {
           console.log(resp);

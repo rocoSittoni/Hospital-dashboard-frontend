@@ -127,7 +127,6 @@ export class UserService {
             map( resp => {
                 const users = resp.users.map( 
                   user => new User( user.name, user.email, user.password, user.img, user.google,user.role, user.uid ));
-                  console.log(users)
                   return {
                     total: resp.total,
                     users
