@@ -39,7 +39,6 @@ export class DoctorsComponent implements OnInit, OnDestroy {
         .subscribe( doctors => {
           this.loading = false;
           this.doctors = doctors;
-          console.log(doctors);
         })
   }
 

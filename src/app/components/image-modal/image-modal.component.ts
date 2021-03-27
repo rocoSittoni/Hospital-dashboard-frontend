@@ -28,8 +28,8 @@ export class ImageModalComponent implements OnInit {
 
   changeImage(file: File){
     
-    this.imageToUpload = file; 
-    
+    this.imageToUpload = file;
+
     if( !file ){ 
       return this.imgTemp = null; 
     }
@@ -39,7 +39,6 @@ export class ImageModalComponent implements OnInit {
     
     reader.onloadend = () => {
       this.imgTemp = reader.result;
-      console.log(reader.result);
     }
   }
 

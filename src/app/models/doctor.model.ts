@@ -13,6 +13,6 @@ export class Doctor {
         public _id?: string,
         public img?: string,
         public user?: _DoctorUser,
-        hospital?: Hospital
+        public hospital?: Hospital
     ) {}
 }
